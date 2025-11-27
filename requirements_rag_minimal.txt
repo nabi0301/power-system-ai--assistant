@@ -1,0 +1,24 @@
+# Minimal Requirements for Power System RAG
+# =========================================
+# Install with: pip install -r requirements_rag_minimal.txt
+
+# Essential packages only
+numpy>=1.21.0
+pandas>=1.5.0
+
+# For local embeddings (recommended)
+sentence-transformers>=2.2.0
+
+# For vector database (choose one)
+chromadb>=0.4.0              # Easy to use, good for development
+# faiss-cpu>=1.7.0           # High performance, good for production
+
+# Optional but recommended for better retrieval
+transformers>=4.20.0         # For cross-encoder re-ranking
+scikit-learn>=1.0.0          # TF-IDF fallback
+
+# Progress bars and utilities
+tqdm>=4.60.0
+
+# Note: The system will work with just numpy and pandas, 
+# but will have limited functionality without embeddings models

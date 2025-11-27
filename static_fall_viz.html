@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Power System Visualization - Fall 2025</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .viz-container {
+            background-color: white;
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .info-card {
+            background-color: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Power System Visualization - Fall 2025</h1>
+        <p>IEEE 118-Bus System with Multiple Layout Options</p>
+    </div>
+    
+    <div class="container">
+        <div class="controls">
+            <div>
+                <label for="layout-selector">Select Visualization Layout:</label>
+                <select id="layout-selector" onchange="updateVisualization()">
+                    <option value="grid">Grid Layout</option>
+                    <option value="radial">Radial Layout</option>
+                </select>
+            </div>
+            
+            <button onclick="downloadSVG()">Download as SVG</button>
+        </div>
+        
+        <div class="viz-container">
+            <h2>IEEE 118-Bus System Visualization</h2>
+            <div id="visualization" style="height: 700px;"></div>
+        </div>
+        
+        <div class="info-card">
+            <h3>System Information:</h3>
+            <ul>
+                <li>✅ Total Buses: 118 (IEEE 118-bus system)</li>
+                <li>✅ Total Branches: 149 transmission lines</li>
+                <li>✅ Multiple visualization layouts available</li>
+                <li>✅ Fall 2025 update with improved features</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const buses = Array.from({length: 118}, (_, i) => ({
+            BUS_NUMBER: i + 1,
+            VM: 0.95 + (i % 15) * 0.01,
+            PD: 50 + (i % 20) * 5,
+            QD: 15 + (i % 15) * 3,
+            BASE_KV: i % 3 === 0 ? 138 : i % 5 === 0 ? 230 : i % 7 === 0 ? 345 : 500,
+            x_coord: (i % 12) * 30,
+            y_coord: Math.floor(i / 12) * 25
+        }));
+        
+        const branches = Array.from({length: 149}, (_, i) => {
+            const from_bus = (i % 118) + 1;
+            const to_bus = ((i + 7) % 118) + 1;
+            if (from_bus !== to_bus) {
+                return {
+                    branch_number: i + 1,
+                    From_Bus: from_bus,
+                    To_Bus: to_bus,
+                    MVA: 100 + (i % 50) * 10,
+                    RATE: 150 + (i % 40) * 25
+                };
+            }
+            return null;
+        }).filter(branch => branch !== null);
+        
+        // Create grid layout visualization
+        function createGridLayout() {
+            const traces = [];
+            
+            // Add bus nodes with voltage data
+            traces.push({
+                x: buses.map(bus => bus.x_coord),
+                y: buses.map(bus => bus.y_coord),
+                mode: 'markers+text',
+                marker: {
+                    size: buses.map(bus => bus.PD / 5),
+                    color: buses.map(bus => bus.VM),
+                    colorscale: 'RdYlGn',
+                    showscale: true,
+                    colorbar: {title: "Voltage Magnitude (p.u.)"}
+                },
+                text: buses.map(bus => bus.BUS_NUMBER),
+                textposition: "middle center",
+                textfont: {
+                    family: "Arial Black",
+                    size: 10,
+                    color: "black"
+                },
+                hovertext: buses.map(bus => 
+                    `Bus ${bus.BUS_NUMBER}<br>Voltage: ${bus.VM.toFixed(3)} p.u.<br>Load: ${bus.PD.toFixed(1)} MW<br>Base kV: ${bus.BASE_KV.toFixed(0)}`
+                ),
+                hovertemplate: '%{hovertext}<extra></extra>',
+                name: 'Buses'
+            });
+            
+            // Add transmission lines with alternating colors
+            const line_colors = ['#FF0000', '#0000FF', '#00CC00', '#9900FF', '#FFD700']; // Red, Blue, Green, Purple, Gold
+            
+            branches.forEach((branch, idx) => {
+                const from_bus = buses.find(b => b.BUS_NUMBER === branch.From_Bus);
+                const to_bus = buses.find(b => b.BUS_NUMBER === branch.To_Bus);
+                
+                if (from_bus && to_bus) {
+                    const color_idx = idx % line_colors.length;
+                    const line_color = line_colors[color_idx];
+                    
+                    const loading_pct = (branch.MVA / branch.RATE) * 100;
+                    let line_width = 3;
+                    let line_dash = 'solid';
+                    if (loading_pct > 90) {
+                        line_width = 4;
+                        line_dash = 'dash';
+                    }
+                    
+                    traces.push({
+                        x: [from_bus.x_coord, to_bus.x_coord],
+                        y: [from_bus.y_coord, to_bus.y_coord],
+                        mode: 'lines',
+                        line: {color: line_color, width: line_width, dash: line_dash},
+                        opacity: 0.8,
+                        hovertemplate: `Line ${branch.From_Bus}-${branch.To_Bus}<br>MVA: ${branch.MVA.toFixed(1)}<br>Rating: ${branch.RATE.toFixed(1)}<br>Loading: ${loading_pct.toFixed(1)}%<extra></extra>`,
+                        showlegend: false
+                    });
+                }
+            });
+            
+            const layout = {
+                title: `IEEE 118-Bus Power System - Grid Layout View (${branches.length} lines shown)`,
+                xaxis: {
+                    showgrid: false,
+                    zeroline: false,
+                    title: "X Coordinate"
+                },
+                yaxis: {
+                    showgrid: false,
+                    zeroline: false,
+                    title: "Y Coordinate"
+                },
+                showlegend: true,
+                height: 700,
+                template: "plotly_white"
+            };
+            
+            return {traces, layout};
+        }
+        
+        // Create radial layout visualization
+        function createRadialLayout() {
+            const traces = [];
+            
+            // Group buses by voltage level
+            const voltage_groups = {
+                '<100kV': [],
+                '100-200kV': [],
+                '200-300kV': [],
+                '300-500kV': [],
+                '>500kV': []
+            };
+            
+            buses.forEach(bus => {
+                if (bus.BASE_KV < 100) voltage_groups['<100kV'].push(bus);
+                else if (bus.BASE_KV < 200) voltage_groups['100-200kV'].push(bus);
+                else if (bus.BASE_KV < 300) voltage_groups['200-300kV'].push(bus);
+                else if (bus.BASE_KV < 500) voltage_groups['300-500kV'].push(bus);
+                else voltage_groups['>500kV'].push(bus);
+            });
+            
+            // Set up radial coordinates based on voltage groups
+            const group_radii = {
+                '<100kV': 120,
+                '100-200kV': 90,
+                '200-300kV': 60,
+                '300-500kV': 30,
+                '>500kV': 15
+            };
+            
+            // Assign radial coordinates
+            const voltage_colors = {
+                '<100kV': '#3498db',    // Blue
+                '100-200kV': '#2ecc71', // Green
+                '200-300kV': '#f1c40f', // Yellow
+                '300-500kV': '#e67e22', // Orange
+                '>500kV': '#e74c3c'     // Red
+            };
+            
+            // Add circular areas for voltage groups
+            Object.entries(group_radii).forEach(([group, radius]) => {
+                const theta = Array.from({length: 100}, (_, i) => i * 2 * Math.PI / 99);
+                const x = theta.map(t => radius * Math.cos(t));
+                const y = theta.map(t => radius * Math.sin(t));
+                
+                traces.push({
+                    x: x,
+                    y: y,
+                    mode: 'lines',
+                    line: {
+                        color: voltage_colors[group] || '#888888',
+                        width: 1,
+                        dash: 'dot'
+                    },
+                    name: `${group} Region`,
+                    hoverinfo: 'name'
+                });
+            });
+            
+            // Map buses to radial coordinates
+            Object.entries(voltage_groups).forEach(([group, group_buses]) => {
+                const radius = group_radii[group];
+                const bus_coords = {};
+                
+                group_buses.forEach((bus, i) => {
+                    const theta = i * (2 * Math.PI / group_buses.length);
+                    bus.x_radial = radius * Math.cos(theta);
+                    bus.y_radial = radius * Math.sin(theta);
+                    bus_coords[bus.BUS_NUMBER] = [bus.x_radial, bus.y_radial];
+                });
+                
+                traces.push({
+                    x: group_buses.map(bus => bus.x_radial),
+                    y: group_buses.map(bus => bus.y_radial),
+                    mode: 'markers+text',
+                    marker: {
+                        size: group_buses.map(bus => bus.PD / 10 + 8),
+                        color: voltage_colors[group] || '#888888',
+                        line: {width: 1, color: '#000000'}
+                    },
+                    text: group_buses.map(bus => bus.BUS_NUMBER),
+                    textposition: "middle center",
+                    textfont: {
+                        family: "Arial",
+                        size: 9,
+                        color: "black"
+                    },
+                    name: `Buses (${group})`,
+                    hovertext: group_buses.map(bus => 
+                        `Bus ${bus.BUS_NUMBER}<br>Group: ${group}<br>Base kV: ${bus.BASE_KV.toFixed(0)}<br>Voltage: ${bus.VM.toFixed(3)} p.u.<br>Load: ${bus.PD.toFixed(1)} MW`
+                    ),
+                    hovertemplate: '%{hovertext}<extra></extra>'
+                });
+                
+                // Store coordinates for lines
+                group_buses.forEach(bus => {
+                    bus_coords[bus.BUS_NUMBER] = [bus.x_radial, bus.y_radial];
+                });
+            });
+            
+            // Add all bus coordinates to a map for line drawing
+            const all_bus_coords = {};
+            buses.forEach(bus => {
+                if (bus.x_radial !== undefined) {
+                    all_bus_coords[bus.BUS_NUMBER] = [bus.x_radial, bus.y_radial];
+                }
+            });
+            
+            // Add transmission lines with alternating colors
+            const line_colors = ['#FF0000', '#0000FF', '#00CC00', '#9900FF', '#FFD700'];
+            let line_count = 0;
+            
+            branches.forEach((branch, idx) => {
+                if (all_bus_coords[branch.From_Bus] && all_bus_coords[branch.To_Bus]) {
+                    const [x0, y0] = all_bus_coords[branch.From_Bus];
+                    const [x1, y1] = all_bus_coords[branch.To_Bus];
+                    
+                    const color_idx = idx % line_colors.length;
+                    const line_color = line_colors[color_idx];
+                    
+                    const loading_pct = (branch.MVA / branch.RATE) * 100;
+                    let line_width = 3;
+                    let line_dash = 'solid';
+                    if (loading_pct > 90) {
+                        line_width = 4;
+                        line_dash = 'dash';
+                    }
+                    
+                    traces.push({
+                        x: [x0, x1],
+                        y: [y0, y1],
+                        mode: 'lines',
+                        line: {color: line_color, width: line_width, dash: line_dash},
+                        opacity: 0.8,
+                        hovertemplate: `Line ${branch.From_Bus}-${branch.To_Bus}<br>MVA: ${branch.MVA.toFixed(1)}<br>Rating: ${branch.RATE.toFixed(1)}<br>Loading: ${loading_pct.toFixed(1)}%<extra></extra>`,
+                        showlegend: false
+                    });
+                    line_count++;
+                }
+            });
+            
+            const layout = {
+                title: `IEEE 118-Bus Power System - Radial Layout View (${line_count} lines shown)`,
+                showlegend: true,
+                height: 700,
+                template: "plotly_white",
+                xaxis: {
+                    showgrid: false,
+                    zeroline: false,
+                    showticklabels: false,
+                    title: ''
+                },
+                yaxis: {
+                    showgrid: false,
+                    zeroline: false,
+                    showticklabels: false,
+                    title: '',
+                    scaleanchor: "x",
+                    scaleratio: 1
+                }
+            };
+            
+            return {traces, layout};
+        }
+        
+        // Update visualization based on selected layout
+        function updateVisualization() {
+            const layout = document.getElementById('layout-selector').value;
+            let result;
+            
+            if (layout === 'radial') {
+                result = createRadialLayout();
+            } else {
+                result = createGridLayout();
+            }
+            
+            Plotly.newPlot('visualization', result.traces, result.layout);
+        }
+        
+        // Download visualization as SVG
+        function downloadSVG() {
+            const layout = document.getElementById('layout-selector').value;
+            const timestamp = new Date().toISOString().replace(/:/g, '-').replace(/\..+/, '');
+            const filename = `${layout}_layout_${timestamp}.svg`;
+            
+            // Get the visualization div
+            const gd = document.getElementById('visualization');
+            
+            // Download as SVG
+            Plotly.downloadImage(gd, {
+                format: 'svg',
+                filename: filename,
+                height: 1600,
+                width: 1800
+            });
+        }
+        
+        // Initialize visualization
+        document.addEventListener('DOMContentLoaded', function() {
+            updateVisualization();
+        });
+    </script>
+</body>
+</html>

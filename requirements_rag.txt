@@ -1,0 +1,41 @@
+# Requirements for Power System RAG Implementation
+# ================================================
+
+# Core dependencies
+numpy>=1.21.0
+pandas>=1.5.0
+# Note: sqlite3, asyncio, logging, datetime, dataclasses, typing, 
+# pathlib, hashlib, json, os, re, uuid, pickle are all part of Python's standard library
+
+# Optional AI/ML packages (install as needed)
+# Embeddings
+sentence-transformers>=2.2.0  # For local embeddings
+openai>=1.0.0                # For OpenAI embeddings (optional)
+scikit-learn>=1.0.0          # TF-IDF fallback
+
+# Vector databases
+chromadb>=0.4.0              # For ChromaDB backend
+faiss-cpu>=1.7.0             # For FAISS backend (CPU version)
+# faiss-gpu>=1.7.0           # For FAISS backend (GPU version)
+
+# Re-ranking (optional but recommended)
+transformers>=4.20.0         # For cross-encoder models
+
+# Additional utilities
+tqdm>=4.60.0                 # Progress bars
+aiohttp>=3.8.0              # Async HTTP (for API calls)
+
+# Cloud vector databases (optional)
+# pinecone-client>=2.2.0     # For Pinecone
+# qdrant-client>=1.0.0       # For Qdrant
+
+# Development and testing
+pytest>=7.0.0
+pytest-asyncio>=0.20.0
+
+# Notes:
+# ------
+# 1. This system is designed to work with minimal dependencies
+# 2. Many packages have fallbacks if not available
+# 3. For production, consider GPU versions where applicable
+# 4. OpenAI API key required only if using OpenAI embeddings

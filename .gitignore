@@ -1,0 +1,79 @@
+﻿# Database files (EXCLUDE ALL DATA)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+data.db
+data_secondary.db
+
+# Data directories
+Base_118/
+contingency_118/
+models/
+deleted_files_backup/
+
+# Virtual environments
+.venv/
+dlr-env/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Environment files with secrets
+.env
+
+# RAG/Vector database storage
+chroma_db/
+rag_storage/
+rag_demo_storage/
+
+# Log files
+*.log
+
+# Generated HTML reports
+*.html
+!static_fall_viz.html
+
+# Generated figures and images (keep PDFs and PNGs for documentation)
+# *.pdf
+# *.png
+
+# IDE specific
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Batch files (optional - uncomment if you don't want to share)
+# *.bat
+
+# Temporary files
+temp_*.py
+*.tmp
+*.bak
+*.backup
+*.backup_*
+
+# CSV data files (optional - uncomment to exclude CSV data)
+# *.csv
+corrective_actions_summary.csv
+
+# Config with sensitive data
+config.json
+database_config.json
+multi_database_config.json
+datasette_config.json
