@@ -6,30 +6,30 @@
 
 An advanced power system visualization and analysis tool featuring an AI-powered assistant for the IEEE 118-bus test system.
 
-## 🌟 Key Features
+## Key Features
 
-### 📊 Power System Analysis
+###  Power System Analysis
 - **Network Topology Visualization**: Interactive network graphs with bus and branch data
 - **Voltage Analysis**: Bus voltage profile monitoring and violation detection
 - **Loading Analysis**: Real-time thermal loading assessment
 - **Contingency Analysis**: N-1 contingency scenarios evaluation
 - **SLR vs DLR Comparison**: Static vs Dynamic Line Rating comparison
 
-### 🤖 AI-Powered Assistant
+###  AI-Powered Assistant
 - **Natural Language Interface**: Chat-based system interaction
 - **Predictive Analysis**: Identify potential violations before they occur
 - **Optimization Recommendations**: Specific MW/MVAR adjustment suggestions
 - **Multi-Case Comparison**: Intelligent comparison across contingency scenarios
 - **Custom Preferences**: Context-aware, view-specific suggestions
 
-### 🔮 Advanced AI Features
+###  Advanced AI Features
 - **Lines Approaching Capacity**: Identifies branches at 80-90% loading
 - **Risk Level Assessment**: HIGH/MODERATE risk categorization
 - **Generator Redispatch**: Optimal power flow recommendations
 - **Load Management**: Demand response and load shedding strategies
 - **Reactive Power Optimization**: Capacitor/reactor placement suggestions
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 ```bash
@@ -72,10 +72,10 @@ python power_viz_with_database.py
 - **[Advanced Features](ADVANCED_FEATURES_SUMMARY.md)** - Predictive & optimization
 - **[Quick Reference](QUICK_REFERENCE.md)** - One-page guide
 
-## 💡 AI Assistant Usage
+## AI Assistant Usage
 
 ### Basic Suggestions
-Click the **💡** button in the chat interface to get:
+Click the ai icon in the chat interface to get:
 - Current system health assessment
 - Violation detection and analysis
 - Predictive warnings for approaching limits
@@ -91,14 +91,14 @@ Click the **💡** button in the chat interface to get:
 "How should I redispatch generators?"
 ```
 
-## 🎯 Use Cases
+## Use Cases
 
 1. **Power System Operators**: Real-time monitoring and decision support
 2. **Planning Engineers**: Contingency analysis and capacity assessment
 3. **Researchers**: Power system analysis and algorithm development
 4. **Students**: Learning tool for power system concepts
 
-## 🏗️ Architecture
+## Architecture
 
 ```
 ┌─────────────────────────────────────────┐
@@ -117,7 +117,7 @@ Click the **💡** button in the chat interface to get:
 └─────────────────┘   └──────────────────┘
 ```
 
-## 📊 Data Structure
+## Data Structure
 
 The application uses IEEE 118-bus test system data:
 - **Base Case**: Normal operating conditions
@@ -126,7 +126,7 @@ The application uses IEEE 118-bus test system data:
 
 **Note**: Data files (*.db) are not included in this repository. Use your own power system data or IEEE test cases.
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 - **Backend**: Python, Pandas, NumPy
 - **Frontend**: Dash, Plotly
@@ -134,7 +134,7 @@ The application uses IEEE 118-bus test system data:
 - **Database**: SQLite, PostgreSQL
 - **Visualization**: Plotly, NetworkX
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 dlr-database-project/
@@ -147,7 +147,7 @@ dlr-database-project/
 └── docs/                          # Documentation
 ```
 
-## 🔧 Configuration
+##  Configuration
 
 Create a `.env` file (not tracked in Git):
 ```env
@@ -166,7 +166,7 @@ OLLAMA_HOST=http://localhost:11434
 OLLAMA_MODEL=llama3.2
 ```
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please:
 1. Fork the repository
@@ -174,26 +174,11 @@ Contributions are welcome! Please:
 3. Make your changes
 4. Submit a pull request
 
-## 📝 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
 
-- IEEE 118-bus test system data
-- Ollama team for local LLM infrastructure
-- Dash/Plotly for visualization framework
 
-## 📧 Contact
 
-For questions or support:
-- Open an issue on GitHub
-- Contact: [Your Email]
 
-## 🌟 Star History
 
-If you find this project useful, please consider giving it a star! ⭐
 
----
-
-**Built with ❤️ for the power systems community**
