@@ -1,0 +1,95 @@
+{
+    "database_path": "data.db",
+    "default_base_case_id": 42,
+    "default_contingency_case_id": 1,
+    "topology_base_id": 42,
+    "case_mapping": {
+        "case1": 42,
+        "case2": 43,
+        "case3": 44,
+        "case4": 45,
+        "case5": 46
+    },
+    "case_to_branch": {
+        "case1": "branch_56_outage",
+        "case2": "branch_90_outage",
+        "case3": "branch_123_outage",
+        "case4": "branch_124_outage",
+        "case5": "branch_158_outage"
+    },
+    "branch_mapping": {
+        "1": {"branch": "56", "from_bus": 35, "to_bus": 37},
+        "2": {"branch": "90", "from_bus": 55, "to_bus": 56},
+        "3": {"branch": "123", "from_bus": 77, "to_bus": 80},
+        "4": {"branch": "124", "from_bus": 77, "to_bus": 82},
+        "5": {"branch": "158", "from_bus": 100, "to_bus": 101}
+    },
+    "visualization": {
+        "branch_colors": {
+            "low_load": "#abe6f6",
+            "medium_load": "#53c6f0",
+            "medium_high_load": "#28aad9",
+            "high_load": "#0D7798",
+            "very_high_load": "#0568c5",
+            "warning": "rgb(100, 149, 237)",
+            "violation": "rgb(255, 0, 0)"
+        },
+        "branch_widths": [2, 4, 6],
+        "branch_width_min": 1,
+        "branch_width_max": 5,
+        "thermal_thresholds": {
+            "warning": 90,
+            "violation": 100,
+            "emergency": 120
+        },
+        "voltage_thresholds": {
+            "warning": 5,
+            "violation": 7,
+            "emergency": 10
+        },
+        "loading_thresholds": [0.7, 0.9],
+        "power_threshold": 50,
+        "graph_height": "850px",
+        "header_style": {
+            "text-align": "center",
+            "color": "#FFFFFF",
+            "background-color": "#0D8767",
+            "font-weight": "bold",
+            "padding": "10px",
+            "border-radius": "5px"
+        },
+        "dropdown_style": {
+            "width": "280px",
+            "height": "35px",
+            "background-color": "white",
+            "color": "black",
+            "font-size": "11px",
+            "margin-bottom": "0px"
+        },
+        "dropdown_container_style": {
+            "background-color": "#f0f0f0",
+            "padding": "5px",
+            "border-radius": "5px",
+            "border": "1px solid #ccc",
+            "height": "45px",
+            "display": "flex",
+            "align-items": "center"
+        }
+    },
+    "ui_text": {
+        "app_title": "Power System Visualization",
+        "base_case_label": "Base",
+        "contingency_case_label": "Contingency Case",
+        "slr_case_label": "SLR Case",
+        "dlr_case_label": "DLR Case"
+    },
+    "app_settings": {
+        "external_stylesheets": "BOOTSTRAP",
+        "suppress_callback_exceptions": true
+    },
+    "server_settings": {
+        "debug": false,
+        "host": "0.0.0.0",
+        "port": 8050
+    }
+}
